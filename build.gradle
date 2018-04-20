@@ -27,9 +27,6 @@ plugins {
 allprojects {
     repositories {
         mavenCentral()
-        maven {
-            url 'https://mvnrepository.com/artifact/org.dom4j/dom4j'
-        }
         google()
         jcenter()
     }
