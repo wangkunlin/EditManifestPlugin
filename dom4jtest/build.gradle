@@ -1,0 +1,9 @@
+apply plugin: 'java-library'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'org.dom4j:dom4j:2.0.2'
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"

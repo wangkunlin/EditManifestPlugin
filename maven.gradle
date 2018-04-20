@@ -1,0 +1,88 @@
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'java'
+
+group = 'com.wkl.manifest.editor'
+version = '0.0.3'
+
+def siteUrl = 'https://github.com/wangkunlin/EditManifestPlugin'   // 项目的主页
+def gitUrl = 'git@github.com:wangkunlin/EditManifestPlugin.git'   // Git仓库的url
+
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "wangkunlin1992"
+            name "kunlinwang"
+            email "wangkunlin1992@gmail.com"
+        }
+    }
+
+    scm {
+        url siteUrl
+    }
+}
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            groupId "${project.group}"
+            artifactId "${project.name}"
+            version "${project.version}"
+            artifact sourcesJar
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'a gradle plugin to edit AndroidManifest.xml when debuggable = false')
+                root.appendNode('name', "${project.name}")
+                root.appendNode('url', siteUrl)
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+bintray {
+    user = getPropertyFromLocalProperties('bintray.user')
+    key = getPropertyFromLocalProperties('bintray.apikey')
+    publications = ['MyPublication']
+    pkg {
+        repo = 'maven' // maven
+        name = "${project.group}:${project.name}"
+        desc = 'a gradle plugin to edit AndroidManifest.xml when debuggable = false'
+        licenses = ['Apache-2.0'] // 开源协议
+        websiteUrl = siteUrl
+        publish = true
+        vcsUrl = gitUrl
+        version {
+            name = "${project.version}"
+            desc = 'Plugin version desc'
+            released = new Date()
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+def getPropertyFromLocalProperties(key) {
+    File file = project.rootProject.file('local.properties')
+    if (file.exists()) {
+        Properties properties = new Properties()
+        properties.load(file.newDataInputStream())
+        return properties.getProperty(key)
+    }
+}

@@ -1,0 +1,11 @@
+apply plugin: 'groovy'
+apply from: rootProject.file("maven.gradle")
+
+dependencies {
+    //gradle sdk
+    compile gradleApi()
+    //groovy sdk
+    compile localGroovy()
+    compileOnly 'com.android.tools.build:gradle:3.1.1'
+    implementation 'org.dom4j:dom4j:2.0.2'
+}
