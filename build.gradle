@@ -3,9 +3,6 @@
 buildscript {
 
     repositories {
-        maven {
-            url 'https://dl.bintray.com/wangkunlin1992/maven/'
-        }
         jcenter()
         google()
         mavenCentral()
