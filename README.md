@@ -14,7 +14,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.wkl.manifest.editor:plugin:0.0.3'
+        classpath 'com.wkl.manifest.editor:plugin:0.0.4'
     }
 }
 ```
