@@ -6,6 +6,7 @@ editManifest {
         delAttr 'roundIcon'
         modAttr 'allowBackup', 'false'
         addAttr 'supportsRtl', 'false'
+        addAttr 'debuggable', 'true'
     }
 
     activity {

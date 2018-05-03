@@ -1,5 +1,7 @@
 package com.wkl.manifest;
 
+import com.wkl.manifest.iinterface.ParseProperty;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -10,7 +12,7 @@ import java.util.Set;
  * <p>
  * On 2018-04-13
  */
-public class ApplicationConfig {
+public class ApplicationConfig implements ParseProperty {
 
     private Map<String, String> mToAddAttr = new HashMap<>();
     private Map<String, String> mToModAttr = new HashMap<>();
@@ -40,4 +42,25 @@ public class ApplicationConfig {
         return mToDelAttr;
     }
 
+    @Override
+    public void parseProperty(StringBuilder container) {
+        container.append("ApplicationConfig:");
+        fillProperty(container, mToAddAttr, "ToAddAttr");
+        fillProperty(container, mToModAttr, "ToModAttr");
+        fillProperty(container, mToDelAttr, "ToAddAttr");
+    }
+
+    private void fillProperty(StringBuilder sb, Map<String, String> attr, String name) {
+        sb.append(name).append("%");
+        attr.forEach((k, v) -> sb.append(k).append('-').append(v).append("#"));
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append("@");
+    }
+
+    private void fillProperty(StringBuilder sb, Set<String> attr, String name) {
+        sb.append(name).append("%");
+        attr.forEach(v -> sb.append(v).append('-').append("#"));
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append("@");
+    }
 }

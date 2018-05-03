@@ -49,4 +49,11 @@ public class ManifestExtension {
         mProject.configure(config, closure);
         mActivityConfigs.add(config);
     }
+
+    public String parseProperty() {
+        StringBuilder container = new StringBuilder("ManifestExtension:");
+        application.parseProperty(container);
+        mActivityConfigs.forEach(activityConfig -> activityConfig.parseProperty(container));
+        return container.toString();
+    }
 }

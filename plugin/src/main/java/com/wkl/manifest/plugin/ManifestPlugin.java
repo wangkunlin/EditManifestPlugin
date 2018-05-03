@@ -7,6 +7,7 @@ import com.wkl.manifest.Processer;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.ProjectConfigurationException;
+import org.gradle.api.tasks.TaskInputs;
 
 import java.lang.reflect.Field;
 
@@ -48,7 +49,7 @@ public class ManifestPlugin implements Plugin<Project> {
 
         boolean is3_0 = versionCompare(version, "3.0.0") >= 0;
 
-        createExtension(project);
+        ManifestExtension extension = createExtension(project);
 
         project.afterEvaluate(project1 -> {
             // 找到 android 的  AppExtension
@@ -60,8 +61,11 @@ public class ManifestPlugin implements Plugin<Project> {
                 boolean debuggable = variant.getBuildType().isDebuggable();
                 // 如果 debuggable = false
                 if (!debuggable) {
-                    // 找打 形如 processReleaseManifest 的 tast
+                    // 找到 形如 processReleaseManifest 的 tast
                     ManifestProcessorTask manifestTask = (ManifestProcessorTask) project1.getTasks().getByName("process" + name + "Manifest");
+                    // 为 task 添加一个属性，使 edit manifest 的 配置发生变化时，ManifestProcessorTask 会重新执行.
+                    TaskInputs inputs = manifestTask.getInputs();
+                    inputs.property("editManifestExtension", extension.parseProperty());
                     // 在 ManifestProcessorTask 完成后 追加 doLast 处理 Manifest 文件
                     manifestTask.doLast(task -> {
                         Processer processer = new Processer(project1, manifestTask, is3_0);
@@ -76,8 +80,8 @@ public class ManifestPlugin implements Plugin<Project> {
         });
     }
 
-    private void createExtension(Project project) {
-        project.getExtensions().create("editManifest", ManifestExtension.class, project);
+    private ManifestExtension createExtension(Project project) {
+        return project.getExtensions().create("editManifest", ManifestExtension.class, project);
     }
 
     private static int versionCompare(String str1, String str2) {

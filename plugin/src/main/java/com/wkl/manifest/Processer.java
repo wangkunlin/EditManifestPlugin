@@ -37,7 +37,9 @@ public class Processer {
 
     //    private boolean mIsUp3_0;
     private Project mProject;
+    private Logger mLogger;
 
+    @SuppressWarnings("deprecation")
     public Processer(Project project, ManifestProcessorTask task, boolean isUp3_0) {
         if (isUp3_0) { // 3.0 以上版本 getManifestOutputFile() 被弃用
             mOutXml = new File(task.getManifestOutputDirectory(), "Edit" + ANDROID_MANIFEST);
@@ -49,6 +51,7 @@ public class Processer {
         mConfig = ManifestExtension.getConfig(project);
 //        mIsUp3_0 = isUp3_0;
         mProject = project;
+        mLogger = mProject.getLogger();
     }
 
     public void run() throws Exception {
@@ -76,14 +79,14 @@ public class Processer {
             mOutXml.delete();
 //            throw new RuntimeException("失败");
         }
+        mLogger.lifecycle("EditManifest: done!");
     }
 
     private void handleActivities(List<ActivityConfig> activityConfigs,
                                   Document document) {
-        Logger logger = mProject.getLogger();
         Element rootElement = document.getRootElement();
         String pkg = rootElement.attribute("package").getValue();
-        logger.info("pkg " + pkg);
+        mLogger.info("pkg: {}", pkg);
 
         Element appNode = rootElement.element("application");
         List<Element> activities = appNode.elements("activity");
@@ -99,7 +102,7 @@ public class Processer {
                     performActivity(appNode, act, config);
                 } else {
                     // not found
-                    logger.info("act not found " + config.name);
+                    mLogger.info("act not found {}", config.name);
                 }
             }
         }
@@ -108,6 +111,7 @@ public class Processer {
     private void performActivity(Element appNode, Element activity, ActivityConfig config) {
         if (config.removed) {
             appNode.remove(activity);
+            mLogger.info("remove activity: {}", config.name);
         }
     }
 
@@ -126,8 +130,10 @@ public class Processer {
                 attribute = new DefaultAttribute(qName);
                 attribute.setValue(value);
                 appNode.add(attribute);
+                mLogger.info("attr {} not exists, add it", name);
             } else {
                 attribute.setValue(value);
+                mLogger.info("attr {} already exists, replace to {}", name, value);
             }
         }
 
@@ -135,9 +141,11 @@ public class Processer {
         for (String del : toDelAttr) {
             Attribute attribute = appNode.attribute(del);
             if (attribute == null) {
+                mLogger.info("attr {} not exists, skip it", del);
                 continue;
             }
             appNode.addAttribute(del, null);
+            mLogger.info("attr {} already exists, removed", del);
         }
 
         Map<String, String> toModAttr = application.getToModAttr();
@@ -146,8 +154,10 @@ public class Processer {
             String value = node.getValue();
             Attribute attribute = appNode.attribute(name);
             if (attribute == null) {
+                mLogger.info("attr {} not exists, skip it, if should add it, use addAttr(name, value)", name);
                 continue;
             }
+            mLogger.info("attr {} already exists, replace to {}", name, value);
             attribute.setValue(value);
         }
     }
