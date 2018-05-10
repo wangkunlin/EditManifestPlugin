@@ -56,12 +56,12 @@ public class ManifestPlugin implements Plugin<Project> {
             AppExtension appExtension = project1.getExtensions().getByType(AppExtension.class);
             // 遍历所有的 构建变体
             appExtension.getApplicationVariants().forEach(variant -> {
-                String name = variant.getName();
-                name = name.substring(0, 1).toUpperCase() + name.substring(1);
                 boolean debuggable = variant.getBuildType().isDebuggable();
                 // 如果 debuggable = false
                 if (!debuggable) {
-                    // 找到 形如 processReleaseManifest 的 tast
+                    String name = variant.getName();
+                    name = name.substring(0, 1).toUpperCase() + name.substring(1);
+                    // 找到 形如 processReleaseManifest 的 task
                     ManifestProcessorTask manifestTask = (ManifestProcessorTask) project1.getTasks().getByName("process" + name + "Manifest");
                     // 为 task 添加一个属性，使 edit manifest 的 配置发生变化时，ManifestProcessorTask 会重新执行.
                     TaskInputs inputs = manifestTask.getInputs();

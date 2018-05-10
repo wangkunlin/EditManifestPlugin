@@ -1,6 +1,4 @@
-package com.wkl.manifest;
-
-import com.wkl.manifest.iinterface.ParseProperty;
+package com.wkl.manifest.config;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,42 +10,42 @@ import java.util.Set;
  * <p>
  * On 2018-04-13
  */
-public class ApplicationConfig implements ParseProperty {
+public class ApplicationConfig extends AbsConfig {
 
-    private Map<String, String> mToAddAttr = new HashMap<>();
-    private Map<String, String> mToModAttr = new HashMap<>();
-    private Set<String> mToDelAttr = new HashSet<>();
+    private Map<String, String> mToAddAttrs = new HashMap<>();
+    private Map<String, String> mToModAttrs = new HashMap<>();
+    private Set<String> mToDelAttrs = new HashSet<>();
 
     public void addAttr(String name, String value) {
-        mToAddAttr.put(name, value);
+        mToAddAttrs.put(name, value);
     }
 
     public void delAttr(String name) {
-        mToDelAttr.add(name);
+        mToDelAttrs.add(name);
     }
 
     public void modAttr(String name, String newValue) {
-        mToModAttr.put(name, newValue);
+        mToModAttrs.put(name, newValue);
     }
 
-    public Map<String, String> getToAddAttr() {
-        return mToAddAttr;
+    public Map<String, String> getToAddAttrs() {
+        return mToAddAttrs;
     }
 
-    public Map<String, String> getToModAttr() {
-        return mToModAttr;
+    public Map<String, String> getToModAttrs() {
+        return mToModAttrs;
     }
 
-    public Set<String> getToDelAttr() {
-        return mToDelAttr;
+    public Set<String> getToDelAttrs() {
+        return mToDelAttrs;
     }
 
     @Override
     public void parseProperty(StringBuilder container) {
         container.append("ApplicationConfig:");
-        fillProperty(container, mToAddAttr, "ToAddAttr");
-        fillProperty(container, mToModAttr, "ToModAttr");
-        fillProperty(container, mToDelAttr, "ToAddAttr");
+        fillProperty(container, mToAddAttrs, "ToAddAttrs");
+        fillProperty(container, mToModAttrs, "ToModAttrs");
+        fillProperty(container, mToDelAttrs, "ToAddAttrs");
     }
 
     private void fillProperty(StringBuilder sb, Map<String, String> attr, String name) {

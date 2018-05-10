@@ -1,8 +1,8 @@
 package com.wkl.manifest.plugin;
 
 
-import com.wkl.manifest.ActivityConfig;
-import com.wkl.manifest.ApplicationConfig;
+import com.wkl.manifest.config.ActivityConfig;
+import com.wkl.manifest.config.ApplicationConfig;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -19,21 +19,21 @@ import groovy.lang.Closure;
  */
 public class ManifestExtension {
 
-    private ApplicationConfig application;
+    private ApplicationConfig mApplicationConfig;
     private List<ActivityConfig> mActivityConfigs = new ArrayList<>();
     private Project mProject;
 
     public ManifestExtension(Project project) {
-        application = new ApplicationConfig();
+        mApplicationConfig = new ApplicationConfig();
         mProject = project;
     }
 
     public void application(Action<ApplicationConfig> action) {
-        action.execute(application);
+        action.execute(mApplicationConfig);
     }
 
-    public ApplicationConfig getApplication() {
-        return application;
+    public ApplicationConfig getApplicationConfig() {
+        return mApplicationConfig;
     }
 
     public static ManifestExtension getConfig(Project project) {
@@ -52,7 +52,7 @@ public class ManifestExtension {
 
     public String parseProperty() {
         StringBuilder container = new StringBuilder("ManifestExtension:");
-        application.parseProperty(container);
+        mApplicationConfig.parseProperty(container);
         mActivityConfigs.forEach(activityConfig -> activityConfig.parseProperty(container));
         return container.toString();
     }

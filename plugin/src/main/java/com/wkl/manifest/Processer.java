@@ -1,6 +1,8 @@
 package com.wkl.manifest;
 
 import com.android.build.gradle.tasks.ManifestProcessorTask;
+import com.wkl.manifest.config.ActivityConfig;
+import com.wkl.manifest.config.ApplicationConfig;
 import com.wkl.manifest.plugin.ManifestExtension;
 
 import org.dom4j.Attribute;
@@ -55,6 +57,7 @@ public class Processer {
     }
 
     public void run() throws Exception {
+        mLogger.lifecycle("EditManifest: start.");
         if (mOutXml.exists()) {
             mOutXml.delete();
         }
@@ -62,7 +65,7 @@ public class Processer {
         SAXReader reader = new SAXReader();
         Document document = reader.read(mManifest);
 
-        ApplicationConfig application = mConfig.getApplication();
+        ApplicationConfig application = mConfig.getApplicationConfig();
         handleApplication(application, document);
         handleActivities(mConfig.getActivityConfigs(), document);
         // 输出到文件
@@ -72,14 +75,17 @@ public class Processer {
         out.close();
         File manifestTmp = new File(mManifest.getAbsolutePath() + ".tmp");
         mManifest.renameTo(manifestTmp);
+        boolean result;
         if (mOutXml.renameTo(mManifest)) {
             manifestTmp.delete();
+            result = true;
         } else {
             manifestTmp.renameTo(mManifest);
             mOutXml.delete();
+            result = false;
 //            throw new RuntimeException("失败");
         }
-        mLogger.lifecycle("EditManifest: done!");
+        mLogger.lifecycle("EditManifest: done, with result {}." , result);
     }
 
     private void handleActivities(List<ActivityConfig> activityConfigs,
@@ -120,7 +126,7 @@ public class Processer {
         Namespace namespace = rootElement.getNamespace();
         Element appNode = rootElement.element("application");
 
-        Map<String, String> toAddAttr = application.getToAddAttr();
+        Map<String, String> toAddAttr = application.getToAddAttrs();
         for (Map.Entry<String, String> node : toAddAttr.entrySet()) {
             String name = node.getKey();
             String value = node.getValue();
@@ -137,7 +143,7 @@ public class Processer {
             }
         }
 
-        Set<String> toDelAttr = application.getToDelAttr();
+        Set<String> toDelAttr = application.getToDelAttrs();
         for (String del : toDelAttr) {
             Attribute attribute = appNode.attribute(del);
             if (attribute == null) {
@@ -148,7 +154,7 @@ public class Processer {
             mLogger.info("attr {} already exists, removed", del);
         }
 
-        Map<String, String> toModAttr = application.getToModAttr();
+        Map<String, String> toModAttr = application.getToModAttrs();
         for (Map.Entry<String, String> node : toModAttr.entrySet()) {
             String name = node.getKey();
             String value = node.getValue();

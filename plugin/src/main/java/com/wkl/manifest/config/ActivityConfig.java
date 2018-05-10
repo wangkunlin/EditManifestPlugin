@@ -1,16 +1,13 @@
-package com.wkl.manifest;
-
-import com.wkl.manifest.iinterface.ParseProperty;
+package com.wkl.manifest.config;
 
 /**
  * Created by <a href="mailto:wangkunlin1992@gmail.com">Wang kunlin</a>
  * <p>
  * On 2018-04-16
  */
-public class ActivityConfig implements ParseProperty {
+public class ActivityConfig extends AbsConfig {
     public String name;
     public boolean removed;
-
 
     public void remove(boolean remove) {
         removed = remove;
