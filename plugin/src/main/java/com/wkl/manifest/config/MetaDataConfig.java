@@ -1,5 +1,7 @@
 package com.wkl.manifest.config;
 
+import org.gradle.api.Project;
+
 /**
  * Created by <a href="mailto:wangkunlin1992@gmail.com">Wang kunlin</a>
  * <p>
@@ -11,6 +13,10 @@ public class MetaDataConfig extends AbsConfig {
     public String mValue;
     public String mResource;
     public String mRename;
+
+    MetaDataConfig(Project project) {
+        super(project);
+    }
 
     public void name(String name) {
         this.mName = name;

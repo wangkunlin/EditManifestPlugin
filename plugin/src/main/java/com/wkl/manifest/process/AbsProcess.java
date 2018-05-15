@@ -1,7 +1,7 @@
 package com.wkl.manifest.process;
 
-import com.wkl.manifest.config.AbsAppConfig;
 import com.wkl.manifest.config.MetaDataConfig;
+import com.wkl.manifest.iinterface.IMetaAttr;
 
 import org.dom4j.Attribute;
 import org.dom4j.Element;
@@ -42,7 +42,7 @@ abstract class AbsProcess {
         metaDataConfigs.forEach((s, config) -> new MetaDataProcess(mNamespace, target, config).process(logger));
     }
 
-    void handleCommon(Element target, AbsAppConfig config, Logger logger) {
+    void handleCommon(Element target, IMetaAttr config, Logger logger) {
         handleAddAttr(target, config.getToAddAttrs(), logger);
         handleDelAttr(target, config.getToDelAttrs(), logger);
         handleModAttr(target, config.getToModAttrs(), logger);

@@ -12,7 +12,7 @@ import groovy.lang.Closure;
  * <p>
  * On 2018-04-13
  */
-public class ApplicationConfig extends AbsAppConfig {
+public class ApplicationConfig extends MetaAttrConfig {
 
     private Map<String, ActivityConfig> mActivityConfigs = new HashMap<>();
 

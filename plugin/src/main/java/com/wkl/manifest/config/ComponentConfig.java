@@ -7,7 +7,7 @@ import org.gradle.api.Project;
  * <p>
  * On 2018-05-14
  */
-class ComponentConfig extends AbsAppConfig {
+class ComponentConfig extends MetaAttrConfig {
 
     public String mName;
 
@@ -21,6 +21,7 @@ class ComponentConfig extends AbsAppConfig {
 
     @Override
     public void parseProperty(StringBuilder container) {
+        super.parseProperty(container);
         container.append(mName);
     }
 

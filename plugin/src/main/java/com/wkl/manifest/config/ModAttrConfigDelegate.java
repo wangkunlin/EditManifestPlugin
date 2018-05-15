@@ -1,5 +1,7 @@
 package com.wkl.manifest.config;
 
+import com.wkl.manifest.iinterface.IModAttr;
+
 import org.gradle.api.Project;
 
 import java.util.HashMap;
@@ -7,65 +9,53 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import groovy.lang.Closure;
-
 /**
  * Created by <a href="mailto:wangkunlin1992@gmail.com">Wang kunlin</a>
  * <p>
- * On 2018-05-14
+ * On 2018-05-15
  */
-public abstract class AbsAppConfig extends AbsConfig {
+class ModAttrConfigDelegate extends AbsConfigDelegate implements IModAttr {
 
-    Project mProject;
+    ModAttrConfigDelegate(Project project) {
+        super(project);
+    }
 
     private Map<String, String> mToAddAttrs = new HashMap<>();
     private Map<String, String> mToModAttrs = new HashMap<>();
     private Set<String> mToDelAttrs = new HashSet<>();
 
-    private Map<String, MetaDataConfig> mMetaDataConfigs = new HashMap<>();
-
-    AbsAppConfig(Project project) {
-        mProject = project;
-    }
-
-    public void metaData(Closure metaData) {
-        MetaDataConfig metaDataConfig = new MetaDataConfig();
-        mProject.configure(metaDataConfig, metaData);
-        mMetaDataConfigs.put(metaDataConfig.mName, metaDataConfig);
-    }
-
+    @Override
     public void addAttr(String name, String value) {
         mToAddAttrs.put(name, value);
     }
 
+    @Override
     public void delAttr(String name) {
         mToDelAttrs.add(name);
     }
 
+    @Override
     public void modAttr(String name, String newValue) {
         mToModAttrs.put(name, newValue);
     }
 
+    @Override
     public Map<String, String> getToAddAttrs() {
         return mToAddAttrs;
     }
 
+    @Override
     public Map<String, String> getToModAttrs() {
         return mToModAttrs;
     }
 
+    @Override
     public Set<String> getToDelAttrs() {
         return mToDelAttrs;
     }
 
-    public Map<String, MetaDataConfig> getMetaDataConfigs() {
-        return mMetaDataConfigs;
-    }
-
     @Override
     public void parseProperty(StringBuilder container) {
-        container.append(getClass().getSimpleName()).append(":");
-        mMetaDataConfigs.forEach((s, metaDataConfig) -> metaDataConfig.parseProperty(container));
         fillProperty(container, mToAddAttrs, "ToAddAttrs");
         fillProperty(container, mToModAttrs, "ToModAttrs");
         fillProperty(container, mToDelAttrs, "ToAddAttrs");
