@@ -4,7 +4,16 @@ apply plugin: 'maven-publish'
 apply plugin: 'java'
 
 group = 'com.wkl.manifest.editor'
-version = '0.0.4'
+version = '0.0.5'
+
+//
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            repository(url: uri("../repo"))
+//        }
+//    }
+//}
 
 def siteUrl = 'https://github.com/wangkunlin/EditManifestPlugin'   // 项目的主页
 def gitUrl = 'git@github.com:wangkunlin/EditManifestPlugin.git'   // Git仓库的url

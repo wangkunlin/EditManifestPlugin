@@ -2,7 +2,7 @@ package com.wkl.manifest.plugin;
 
 import com.android.build.gradle.AppExtension;
 import com.android.build.gradle.tasks.ManifestProcessorTask;
-import com.wkl.manifest.Processer;
+import com.wkl.manifest.process.Processor;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -68,10 +68,10 @@ public class ManifestPlugin implements Plugin<Project> {
                     inputs.property("editManifestExtension", extension.parseProperty());
                     // 在 ManifestProcessorTask 完成后 追加 doLast 处理 Manifest 文件
                     manifestTask.doLast(task -> {
-                        Processer processer = new Processer(project1, manifestTask, is3_0);
+                        Processor processor = new Processor(project1, manifestTask, is3_0);
                         try {
-                            processer.run();
-                        } catch (Exception e) {
+                            processor.run();
+                        } catch (Throwable e) {
                             throw new RuntimeException("处理 Manifest 失败", e);
                         }
                     });

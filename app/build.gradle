@@ -7,11 +7,21 @@ editManifest {
         modAttr 'allowBackup', 'false'
         addAttr 'supportsRtl', 'false'
         addAttr 'debuggable', 'true'
-    }
 
-    activity {
-        name '.MainActivity'
-        remove true
+        activity {
+            name '.MainActivity'
+            addAttr 'theme', '@style/AppTheme'
+
+            metaData {
+                name 'com.wkl.activity.metadata.test'
+                value 'activity_test_metadata'
+            }
+        }
+
+        metaData {
+            name 'com.wkl.app.metadata.test'
+            value 'app_test_metadata'
+        }
     }
 }
 
