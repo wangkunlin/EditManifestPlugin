@@ -14,7 +14,7 @@ import groovy.lang.Closure;
  * <p>
  * On 2018-05-14
  */
-public class AbsAppConfig extends AbsConfig {
+public abstract class AbsAppConfig extends AbsConfig {
 
     Project mProject;
 

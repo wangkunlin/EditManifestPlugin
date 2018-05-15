@@ -3,6 +3,7 @@ package com.wkl.manifest.plugin;
 import com.android.build.gradle.AppExtension;
 import com.android.build.gradle.tasks.ManifestProcessorTask;
 import com.wkl.manifest.process.Processor;
+import com.wkl.manifest.utils.Utils;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -43,11 +44,11 @@ public class ManifestPlugin implements Plugin<Project> {
         }
 
         // 比较版本
-        if (version == null || versionCompare(version, "2.2.0") < 0) {
+        if (version == null || Utils.versionCompare(version, "2.2.0") < 0) {
             throw new ProjectConfigurationException("Plugin requires the 'com.android.tools.build:gradle' version 2.2.0 or above to be configured.", null);
         }
 
-        boolean is3_0 = versionCompare(version, "3.0.0") >= 0;
+        boolean is3_0 = Utils.versionCompare(version, "3.0.0") >= 0;
 
         ManifestExtension extension = createExtension(project);
 
@@ -84,25 +85,4 @@ public class ManifestPlugin implements Plugin<Project> {
         return project.getExtensions().create("editManifest", ManifestExtension.class, project);
     }
 
-    private static int versionCompare(String str1, String str2) {
-        String[] vals1 = str1.split("-")[0].split("\\.");
-        String[] vals2 = str2.split("-")[0].split("\\.");
-        int i = 0;
-        // set index to first non-equal ordinal or length of shortest version string
-        while (i < vals1.length && i < vals2.length && vals1[i].equals(vals2[i])) {
-            i++;
-        }
-
-        // compare first non-equal ordinal number
-        if (i < vals1.length && i < vals2.length) {
-            int diff = Integer.valueOf(vals1[i]).compareTo(Integer.valueOf(vals2[i]));
-            return Integer.signum(diff);
-        }
-
-        // the strings are equal or one string is a substring of the other
-        // e.g. "1.2.3" = "1.2.3" or "1.2.3" < "1.2.3.4"
-        else {
-            return Integer.signum(vals1.length - vals2.length);
-        }
-    }
 }
