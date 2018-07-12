@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'java'
 
 group = 'com.wkl.manifest.editor'
-version = '0.0.5'
+version = '0.0.6'
 
 //
 //uploadArchives {

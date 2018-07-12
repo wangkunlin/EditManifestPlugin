@@ -12,3 +12,6 @@
 2. 新增 activity 节点属性的 增删改
 3. application 以及 activity 支持配置 meta-data
 4. meta-data 配置若在 Manifest 中找不到则自动创建，节点支持移除，支持 rename
+
+## 0.0.5 增加一些功能
+bug fix
