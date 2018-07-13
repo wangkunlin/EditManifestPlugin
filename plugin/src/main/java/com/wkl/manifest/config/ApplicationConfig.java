@@ -33,6 +33,9 @@ public class ApplicationConfig extends MetaAttrConfig {
     @Override
     public void parseProperty(StringBuilder container) {
         super.parseProperty(container);
-        mActivityConfigs.forEach((s, activityConfig) -> activityConfig.parseProperty(container));
+        mActivityConfigs.forEach((s, activityConfig) -> {
+            container.append(s);
+            activityConfig.parseProperty(container);
+        });
     }
 }

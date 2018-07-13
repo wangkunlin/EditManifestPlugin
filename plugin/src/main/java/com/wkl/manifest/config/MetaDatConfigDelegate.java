@@ -19,6 +19,7 @@ class MetaDatConfigDelegate extends AbsConfigDelegate implements IMetaData {
     MetaDatConfigDelegate(Project project) {
         super(project);
     }
+
     private Map<String, MetaDataConfig> mMetaDataConfigs = new HashMap<>();
 
     @Override
@@ -35,6 +36,9 @@ class MetaDatConfigDelegate extends AbsConfigDelegate implements IMetaData {
 
     @Override
     public void parseProperty(StringBuilder container) {
-        mMetaDataConfigs.forEach((s, metaDataConfig) -> metaDataConfig.parseProperty(container));
+        mMetaDataConfigs.forEach((s, metaDataConfig) -> {
+            container.append(s);
+            metaDataConfig.parseProperty(container);
+        });
     }
 }

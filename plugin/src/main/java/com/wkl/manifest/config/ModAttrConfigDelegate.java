@@ -58,7 +58,7 @@ class ModAttrConfigDelegate extends AbsConfigDelegate implements IModAttr {
     public void parseProperty(StringBuilder container) {
         fillProperty(container, mToAddAttrs, "ToAddAttrs");
         fillProperty(container, mToModAttrs, "ToModAttrs");
-        fillProperty(container, mToDelAttrs, "ToAddAttrs");
+        fillProperty(container, mToDelAttrs, "ToDelAttrs");
     }
 
     private static void fillProperty(StringBuilder sb, Map<String, String> attr, String name) {

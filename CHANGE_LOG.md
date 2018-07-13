@@ -13,5 +13,8 @@
 3. application 以及 activity 支持配置 meta-data
 4. meta-data 配置若在 Manifest 中找不到则自动创建，节点支持移除，支持 rename
 
-## 0.0.5 增加一些功能
+## 0.0.6
+bug fix
+
+## 0.0.7 0.0.8
 bug fix
