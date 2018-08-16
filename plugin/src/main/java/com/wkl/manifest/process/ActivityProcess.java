@@ -35,11 +35,14 @@ class ActivityProcess extends AbsProcess {
                     || config.mName.equals(mPackage + actName)
                     || actName.equals(mPackage + config.mName)) {
                 targetAct = act;
-            } else {
-                // not found
-                logger.info("act not found {}", config.mName);
-                return;
+                break;
             }
+        }
+
+        if (targetAct == null) {
+            // not found
+            logger.info("act not found {}", config.mName);
+            return;
         }
 
         if (mConfig.mRemoved) {

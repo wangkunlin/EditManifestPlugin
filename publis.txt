@@ -1,0 +1,10 @@
+
+1. clean project
+
+2. run generatePomFileForMyPublicationPublication Task
+
+3. run publishToMavenLocal Task
+
+4. run bintrayUpload Task
+
+5. Done

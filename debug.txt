@@ -1,0 +1,6 @@
+
+Eidt Configurations > + > Remote > Rename > Click OK
+
+Command parameters
+
+-Dorg.gradle.daemon=false -Dorg.gradle.debug=true

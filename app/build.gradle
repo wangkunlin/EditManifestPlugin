@@ -11,11 +11,17 @@ editManifest {
         activity {
             name '.MainActivity'
             addAttr 'theme', '@style/AppTheme'
+            delAttr 'exported'
 
             metaData {
                 name 'com.wkl.activity.metadata.test'
                 value 'activity_test_metadata'
             }
+        }
+
+        activity {
+            name '.TestActivity'
+            delAttr 'exported'
         }
 
         metaData {
