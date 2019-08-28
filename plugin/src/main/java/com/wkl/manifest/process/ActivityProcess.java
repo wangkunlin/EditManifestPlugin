@@ -25,7 +25,7 @@ class ActivityProcess extends AbsProcess {
     }
 
     @Override
-    void onHandle(Logger logger) {
+    protected void onHandle(Logger logger, boolean debuggable) {
         List<Element> activities = mParent.elements("activity");
         ActivityConfig config = mConfig;
         Element targetAct = null;
@@ -45,13 +45,15 @@ class ActivityProcess extends AbsProcess {
             return;
         }
 
-        if (mConfig.mRemoved) {
-            mParent.remove(targetAct);
-            logger.info("activity {} removed, skip other action", mConfig.mName);
-            return;
+        if (shouldRun(debuggable, mConfig.getRunWhere())) {
+            if (mConfig.isRemoved()) {
+                mParent.remove(targetAct);
+                logger.info("activity {} removed, skip other action", mConfig.mName);
+                return;
+            }
         }
 
-        handleCommon(targetAct, mConfig, logger);
+        handleCommon(targetAct, mConfig, logger, debuggable);
     }
 
 }

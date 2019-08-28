@@ -23,7 +23,7 @@ class MetaAttrConfig extends AbsConfig implements IMetaAttr {
 
     MetaAttrConfig(Project project) {
         super(project);
-        mMetaDelegate = new MetaDatConfigDelegate(project);
+        mMetaDelegate = new MetaDataConfigDelegate(project);
         mModAttrDelegate = new ModAttrConfigDelegate(project);
     }
 

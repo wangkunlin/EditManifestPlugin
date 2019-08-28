@@ -30,13 +30,16 @@ class MetaDataProcess extends AbsProcess {
     }
 
     @Override
-    void onHandle(Logger logger) {
+    protected void onHandle(Logger logger, boolean debuggable) {
+        if (!shouldRun(debuggable, mConfig.getRunWhere())) {
+            return;
+        }
         List<Element> elements = mParent.elements(META_DATA);
 
         for (Element meta : elements) {
             String name = meta.attribute("name").getValue();
             if (mConfig.mName.equals(name)) {
-                if (mConfig.mRemoved) {
+                if (mConfig.isRemoved()) {
                     mParent.remove(meta);
                     logger.info("meta-data {} removed, skip other action", mConfig.mName);
                     return;
@@ -47,7 +50,7 @@ class MetaDataProcess extends AbsProcess {
         }
 
         // not found
-        if (Utils.isTextEmpty(mConfig.mName) || mConfig.mRemoved) {
+        if (Utils.isTextEmpty(mConfig.mName) || mConfig.isRemoved()) {
             return;
         }
         Element meta = new DefaultElement(META_DATA);

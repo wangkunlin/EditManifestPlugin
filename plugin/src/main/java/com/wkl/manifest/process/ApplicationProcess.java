@@ -2,6 +2,7 @@ package com.wkl.manifest.process;
 
 import com.wkl.manifest.config.ActivityConfig;
 import com.wkl.manifest.config.ApplicationConfig;
+import com.wkl.manifest.config.RunWhere;
 
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -26,19 +27,25 @@ class ApplicationProcess extends AbsProcess {
     }
 
     @Override
-    void onHandle(Logger logger) {
+    protected void onHandle(Logger logger, boolean debuggable) {
         Element appNode = mParent.element("application");
         if (appNode == null) return;
+
         ApplicationConfig application = mConfig;
-        if (application.mRemoved) {
-            mParent.remove(appNode);
-            logger.info("application removed, skip other action");
-            return;
+
+        RunWhere runWhere = application.getRunWhere();
+
+        if (shouldRun(debuggable, runWhere)) {
+            if (application.isRemoved()) {
+                mParent.remove(appNode);
+                logger.info("application removed, skip other action");
+                return;
+            }
         }
 
-        handleCommon(appNode, application, logger);
+        handleCommon(appNode, application, logger, debuggable);
 
         Map<String, ActivityConfig> activities = application.getActivityConfigs();
-        activities.forEach((s, config) -> new ActivityProcess(mNamespace, appNode, mPackage, config).process(logger));
+        activities.forEach((s, config) -> new ActivityProcess(mNamespace, appNode, mPackage, config).process(logger, debuggable));
     }
 }

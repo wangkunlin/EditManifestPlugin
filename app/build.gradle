@@ -2,6 +2,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.wkl.manifest.editor'
 
 editManifest {
+
+    packageName 'com.mtime.manifesteditor_package'
+
+    replace '{to_replace_value}', 'replaced_value'
+
     application {
         delAttr 'roundIcon'
         modAttr 'allowBackup', 'false'
@@ -9,11 +14,12 @@ editManifest {
         addAttr 'debuggable', 'true'
 
         activity {
-            name '.MainActivity'
+            name 'com.mtime.manifesteditor.MainActivity'
             addAttr 'theme', '@style/AppTheme'
             delAttr 'exported'
 
             metaData {
+                runWhere 'debug'
                 name 'com.wkl.activity.metadata.test'
                 value 'activity_test_metadata'
             }

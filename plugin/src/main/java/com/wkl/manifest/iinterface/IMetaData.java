@@ -12,6 +12,7 @@ import groovy.lang.Closure;
  * On 2018-05-15
  */
 public interface IMetaData extends IParseProperty {
+
     void metaData(Closure metaData);
 
     Map<String, MetaDataConfig> getMetaDataConfigs();

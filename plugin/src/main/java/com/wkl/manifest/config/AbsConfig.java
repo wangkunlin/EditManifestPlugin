@@ -1,6 +1,7 @@
 package com.wkl.manifest.config;
 
 import com.wkl.manifest.iinterface.IParseProperty;
+import com.wkl.manifest.iinterface.IRunWhere;
 
 import org.gradle.api.Project;
 
@@ -9,10 +10,11 @@ import org.gradle.api.Project;
  * <p>
  * On 2018-05-10
  */
-abstract class AbsConfig implements IParseProperty {
+abstract class AbsConfig implements IParseProperty, IRunWhere {
 
     Project mProject;
-    public boolean mRemoved;
+    private boolean mRemoved = false;
+    private RunWhere mRunWhere = RunWhere.RELEASE;
 
     AbsConfig(Project project) {
         mProject = project;
@@ -22,7 +24,22 @@ abstract class AbsConfig implements IParseProperty {
         mRemoved = remove;
     }
 
+    public boolean isRemoved() {
+        return mRemoved;
+    }
+
+    @Override
+    public RunWhere getRunWhere() {
+        return mRunWhere;
+    }
+
+    @Override
+    public void runWhere(RunWhere runWhere) {
+        mRunWhere = runWhere;
+    }
+
     public void parseProperty(StringBuilder container) {
         container.append(mRemoved);
+        container.append(mRunWhere);
     }
 }

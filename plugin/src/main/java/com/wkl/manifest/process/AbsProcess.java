@@ -1,6 +1,7 @@
 package com.wkl.manifest.process;
 
 import com.wkl.manifest.config.MetaDataConfig;
+import com.wkl.manifest.config.RunWhere;
 import com.wkl.manifest.iinterface.IMetaAttr;
 
 import org.dom4j.Attribute;
@@ -29,24 +30,32 @@ abstract class AbsProcess {
         mParent = parent;
     }
 
-    final void process(Logger logger) {
+    final void process(Logger logger, boolean debuggable) {
         String simpleName = getClass().getSimpleName();
         logger.lifecycle("start handle {}", simpleName);
-        onHandle(logger);
+        onHandle(logger, debuggable);
         logger.lifecycle("end handle {}", simpleName);
     }
 
-    abstract void onHandle(Logger logger);
-
-    private void handleMetaData(Element target, Map<String, MetaDataConfig> metaDataConfigs, Logger logger) {
-        metaDataConfigs.forEach((s, config) -> new MetaDataProcess(mNamespace, target, config).process(logger));
+    static boolean shouldRun(boolean debuggable, RunWhere runWhere) {
+        return runWhere == RunWhere.ALL // 不管什么时候都执行
+                || (debuggable && runWhere == RunWhere.DEBUG) // 只有 debug 执行
+                || (!debuggable && runWhere == RunWhere.RELEASE); // 只有 release 执行
     }
 
-    void handleCommon(Element target, IMetaAttr config, Logger logger) {
-        handleAddAttr(target, config.getToAddAttrs(), logger);
-        handleDelAttr(target, config.getToDelAttrs(), logger);
-        handleModAttr(target, config.getToModAttrs(), logger);
-        handleMetaData(target, config.getMetaDataConfigs(), logger);
+    protected abstract void onHandle(Logger logger, boolean debuggable);
+
+    private void handleMetaData(Element target, Map<String, MetaDataConfig> metaDataConfigs, Logger logger, boolean debuggable) {
+        metaDataConfigs.forEach((s, config) -> new MetaDataProcess(mNamespace, target, config).process(logger, debuggable));
+    }
+
+    void handleCommon(Element target, IMetaAttr config, Logger logger, boolean debuggable) {
+        if (shouldRun(debuggable, config.getRunWhere())) {
+            handleAddAttr(target, config.getToAddAttrs(), logger);
+            handleDelAttr(target, config.getToDelAttrs(), logger);
+            handleModAttr(target, config.getToModAttrs(), logger);
+        }
+        handleMetaData(target, config.getMetaDataConfigs(), logger, debuggable);
     }
 
     private void handleAddAttr(Element target, Map<String, String> toAddAttr, Logger logger) {

@@ -5,5 +5,5 @@ package com.wkl.manifest.iinterface;
  * <p>
  * On 2018-05-15
  */
-public interface IMetaAttr extends IMetaData, IModAttr {
+public interface IMetaAttr extends IMetaData, IModAttr, IRunWhere {
 }

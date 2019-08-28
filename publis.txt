@@ -1,4 +1,7 @@
+# local
+1. run upload/uploadArchives Task
 
+# maven
 1. clean project
 
 2. run generatePomFileForMyPublicationPublication Task

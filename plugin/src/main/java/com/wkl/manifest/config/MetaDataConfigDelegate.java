@@ -14,9 +14,9 @@ import groovy.lang.Closure;
  * <p>
  * On 2018-05-15
  */
-class MetaDatConfigDelegate extends AbsConfigDelegate implements IMetaData {
+class MetaDataConfigDelegate extends AbsConfigDelegate implements IMetaData {
 
-    MetaDatConfigDelegate(Project project) {
+    MetaDataConfigDelegate(Project project) {
         super(project);
     }
 
