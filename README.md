@@ -2,8 +2,6 @@
 
 AndroidManifest.xml 文件修改插件, 只能在 app 模块中使用
 
-只支持修改 debuggable = false 的清单文件
-
 ## 使用方法
 
 在工程的 build.gradle 中修改
