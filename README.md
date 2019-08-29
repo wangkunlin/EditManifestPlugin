@@ -15,7 +15,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.wkl.manifest.editor:plugin:0.1.0'
+        classpath 'com.wkl.manifest.editor:plugin:0.1.1'
     }
 }
 ```
@@ -104,6 +104,6 @@ resource(resource)|设置 meta-data 的 resource
 remove(remove)|移除节点
 
 ## 兼容
-理论上支持 com.android.tools.build:gradle:2.2.0 及以上版本，已经适配了 3.1.1
+支持 com.android.tools.build:gradle:2.2.0 及以上版本，已经适配了 3.5.0
 
 如有问题，请联系我修改

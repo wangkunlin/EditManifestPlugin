@@ -25,7 +25,8 @@ public class ManifestPlugin implements Plugin<Project> {
     public void apply(Project project) {
         // 只应用于 application 模块
         if (!project.getPlugins().hasPlugin("com.android.application")) {
-            throw new ProjectConfigurationException("Plugin requires the 'com.android.application' plugin to be configured.", null);
+            Throwable e = new RuntimeException();
+            throw new ProjectConfigurationException("Plugin requires the 'com.android.application' plugin to be configured.", e);
         }
         String version = null;
         try {
@@ -47,10 +48,11 @@ public class ManifestPlugin implements Plugin<Project> {
 
         // 比较版本
         if (version == null || Utils.versionCompare(version, "2.2.0") < 0) {
-            throw new ProjectConfigurationException("Plugin requires the 'com.android.tools.build:gradle' version 2.2.0 or above to be configured.", null);
+            Throwable e = new RuntimeException();
+            throw new ProjectConfigurationException("Plugin requires the 'com.android.tools.build:gradle' version 2.2.0 or above to be configured.", e);
         }
 
-        boolean is3_0 = Utils.versionCompare(version, "3.0.0") >= 0;
+//        boolean is3_0 = Utils.versionCompare(version, "3.0.0") >= 0;
 
         ManifestExtension extension = createExtension(project);
 
@@ -71,8 +73,9 @@ public class ManifestPlugin implements Plugin<Project> {
                 inputs.property("editManifestExtension", extension.parseProperty());
                 // 在 ManifestProcessorTask 完成后 追加 doLast 处理 Manifest 文件
                 manifestTask.doLast(task -> {
-                    Processor processor = new Processor(project1, manifestTask, is3_0, debuggable);
+                    Processor processor;
                     try {
+                        processor = new Processor(project1, manifestTask, debuggable);
                         processor.run();
                     } catch (Throwable e) {
                         throw new RuntimeException("处理 Manifest 失败", e);

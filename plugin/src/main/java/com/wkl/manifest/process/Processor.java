@@ -12,6 +12,9 @@ import org.gradle.api.tasks.OutputFile;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.lang.reflect.Method;
+
+import groovy.lang.GroovyClassLoader;
 
 /**
  * Created by <a href="mailto:wangkunlin1992@gmail.com">Wang kunlin</a>
@@ -19,34 +22,32 @@ import java.io.FileWriter;
  * On 2018-04-13
  */
 public class Processor {
-    private static final String ANDROID_PREFIX = "android:";
-    private static final String ANDROID_MANIFEST = "AndroidManifest.xml";
+
     private ManifestExtension mConfig;
     @InputFile
     private File mManifest;
     @OutputFile
     private File mOutXml;
 
-    //    private boolean mIsUp3_0;
-//    private Project mProject;
     private Logger mLogger;
     private boolean mDebuggable;
 
-    @SuppressWarnings("deprecation")
-    public Processor(Project project, ManifestProcessorTask task, boolean isUp3_0, boolean debuggable) {
-        if (isUp3_0) { // 3.0 以上版本 getManifestOutputFile() 被弃用
-            mOutXml = new File(task.getManifestOutputDirectory(), "Edit" + ANDROID_MANIFEST);
-            mManifest = new File(task.getManifestOutputDirectory(), ANDROID_MANIFEST);
-        } else {
-            mOutXml = new File(task.getManifestOutputFile().getParentFile(), "Edit" + ANDROID_MANIFEST);
-            mManifest = new File(task.getManifestOutputFile().getAbsolutePath());
-        }
-        mConfig = ManifestExtension.getConfig(project);
-//        mIsUp3_0 = isUp3_0;
-//        mProject = project;
+    public Processor(Project project, ManifestProcessorTask task, boolean debuggable) throws Throwable {
         mLogger = project.getLogger();
-
         mDebuggable = debuggable;
+
+        GroovyClassLoader cl = new GroovyClassLoader();
+        Class scriptClass = cl.loadClass("com.wkl.manifest.utils.GradleCompat");
+
+        Method method = scriptClass.getDeclaredMethod("getManifestOutputFile", ManifestProcessorTask.class);
+        mManifest = (File) method.invoke(null, task);
+
+        mLogger.lifecycle("Found Manifest file {}.", mManifest.getAbsolutePath());
+
+        mOutXml = new File(mManifest.getParentFile(), "EditAndroidManifest.xml");
+        mLogger.lifecycle("Temp Manifest file {}.", mOutXml.getAbsolutePath());
+
+        mConfig = ManifestExtension.getConfig(project);
     }
 
     public void run() throws Throwable {
