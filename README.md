@@ -69,6 +69,7 @@ editManifest {
 ### editManifest 根节点
 
 packageName('packagename')
+
 replace('from', 'to')
 
 ### application 节点
