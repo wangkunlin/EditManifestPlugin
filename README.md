@@ -69,14 +69,12 @@ editManifest {
 
 ### editManifest 根节点
 
+```
 packageName('packagename')
-
 packageName('packagename', '[debug release all]')
-
 replace('from', 'to')
-
 replace('from', 'to', '[debug release all]')
-
+```
 ### application 节点
 
 method | desc
