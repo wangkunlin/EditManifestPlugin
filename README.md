@@ -26,7 +26,8 @@ apply plugin: 'com.wkl.manifest.editor'
 editManifest {
 
     // 修改包名
-    packageName 'com.mtime.manifesteditor_package'
+    // packageName 'com.mtime.manifesteditor_package'
+    packageName 'com.mtime.manifesteditor_package', 'release'
 
     // 全局文本替换
     replace '{to_replace_value}', 'replaced_value'
@@ -70,7 +71,11 @@ editManifest {
 
 packageName('packagename')
 
+packageName('packagename', '[debug release all]')
+
 replace('from', 'to')
+
+replace('from', 'to', '[debug release all]')
 
 ### application 节点
 

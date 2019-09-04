@@ -2,6 +2,8 @@ package com.wkl.manifest.plugin;
 
 
 import com.wkl.manifest.config.ApplicationConfig;
+import com.wkl.manifest.config.RunWhere;
+import com.wkl.manifest.utils.Pair;
 import com.wkl.manifest.utils.Utils;
 
 import org.gradle.api.Action;
@@ -19,7 +21,8 @@ public class ManifestExtension {
 
     private ApplicationConfig mApplicationConfig;
     private String mPackageName;
-    private Map<String, String> mToReplace = new HashMap<>();
+    private RunWhere mPackageRunWhere;
+    private Map<String, Pair<String, RunWhere>> mToReplace = new HashMap<>();
 
     public ManifestExtension(Project project) {
         mApplicationConfig = new ApplicationConfig(project);
@@ -30,19 +33,32 @@ public class ManifestExtension {
     }
 
     public void packageName(String packageName) {
+        packageName(packageName, RunWhere.ALL);
+    }
+
+    public void packageName(String packageName, RunWhere where) {
         mPackageName = packageName.trim();
+        mPackageRunWhere = where;
     }
 
     public void replace(String from, String to) {
-        mToReplace.put(from.trim(), to.trim());
+        replace(from, to, RunWhere.ALL);
     }
 
-    public Map<String, String> getToReplace() {
+    public void replace(String from, String to, RunWhere where) {
+        mToReplace.put(from.trim(), Pair.create(to.trim(), where));
+    }
+
+    public Map<String, Pair<String, RunWhere>> getToReplace() {
         return mToReplace;
     }
 
     public String getPackageName() {
         return mPackageName;
+    }
+
+    public RunWhere getPackageRunWhere() {
+        return mPackageRunWhere;
     }
 
     public ApplicationConfig getApplicationConfig() {
@@ -57,12 +73,13 @@ public class ManifestExtension {
         StringBuilder container = new StringBuilder("ManifestExtension:");
         mApplicationConfig.parseProperty(container);
         container.append(mPackageName);
+        container.append(mPackageRunWhere);
         fillProperty(container, mToReplace, "replace");
         return Utils.generateMD5(container.toString());
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static void fillProperty(StringBuilder sb, Map<String, String> attr, String name) {
+    private static void fillProperty(StringBuilder sb, Map<String, Pair<String, RunWhere>> attr, String name) {
         sb.append(name).append("%");
         attr.forEach((k, v) -> sb.append(k).append('-').append(v).append("#"));
         sb.deleteCharAt(sb.length() - 1);

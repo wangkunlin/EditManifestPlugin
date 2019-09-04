@@ -1,7 +1,9 @@
 package com.wkl.manifest.process;
 
 import com.wkl.manifest.config.ApplicationConfig;
+import com.wkl.manifest.config.RunWhere;
 import com.wkl.manifest.plugin.ManifestExtension;
+import com.wkl.manifest.utils.Pair;
 
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -34,21 +36,26 @@ public class ExtensionProcess extends AbsProcess {
         Document document = mContainer.document;
 
         String xml = document.asXML();
-        Map<String, String> toReplace = mExtension.getToReplace();
-        for (Map.Entry<String, String> replace : toReplace.entrySet()) {
+        boolean replaced = false;
+        Map<String, Pair<String, RunWhere>> toReplace = mExtension.getToReplace();
+        for (Map.Entry<String, Pair<String, RunWhere>> replace : toReplace.entrySet()) {
             String name = replace.getKey();
-            String value = replace.getValue();
-            logger.info("Replace {} to {}", name, value);
-            xml = xml.replace(name, value);
+            Pair<String, RunWhere> value = replace.getValue();
+            if (shouldRun(debuggable, value.second)) {
+                logger.info("Replace {} to {}", name, value.first);
+                xml = xml.replace(name, value.first);
+                replaced = true;
+            }
         }
 
-        try (StringReader reader = new StringReader(xml)) {
-            document = mContainer.reader.read(reader);
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
+        if (replaced) {
+            try (StringReader reader = new StringReader(xml)) {
+                document = mContainer.reader.read(reader);
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+            mContainer.document = document;
         }
-
-        mContainer.document = document;
 
         Element rootElement = document.getRootElement();
         Namespace namespace = rootElement.getNamespace();
@@ -58,9 +65,11 @@ public class ExtensionProcess extends AbsProcess {
 
         String targetPackageName = mExtension.getPackageName();
         if (targetPackageName != null && targetPackageName.length() > 0) {
-            pkg = targetPackageName;
-            logger.info("Change Manifest package to: {}", pkg);
-            packageAttr.setValue(pkg);
+            if (shouldRun(debuggable, mExtension.getPackageRunWhere())) {
+                pkg = targetPackageName;
+                logger.info("Change Manifest package to: {}", pkg);
+                packageAttr.setValue(pkg);
+            }
         }
 
         ApplicationConfig application = mExtension.getApplicationConfig();

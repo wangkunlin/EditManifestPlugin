@@ -3,7 +3,7 @@ apply plugin: 'com.wkl.manifest.editor'
 
 editManifest {
 
-    packageName 'com.mtime.manifesteditor_package'
+    packageName 'com.mtime.manifesteditor_package', 'release'
 
     replace '{to_replace_value}', 'replaced_value'
 
