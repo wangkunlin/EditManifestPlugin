@@ -36,8 +36,27 @@ public class ExtensionProcess extends AbsProcess {
         Document document = mContainer.document;
 
         String xml = document.asXML();
-        boolean replaced = false;
+
+        Element rootElement = document.getRootElement();
+        Namespace namespace = rootElement.getNamespace();
+        Attribute packageAttr = rootElement.attribute("package");
+        String pkg = packageAttr.getValue();
+        logger.info("Manifest package: {}", pkg);
+
         Map<String, Pair<String, RunWhere>> toReplace = mExtension.getToReplace();
+
+        String targetPackageName = mExtension.getPackageName();
+        if (targetPackageName != null && targetPackageName.length() > 0) {
+            RunWhere packageRunWhere = mExtension.getPackageRunWhere();
+            if (shouldRun(debuggable, packageRunWhere)) {
+                toReplace.put(pkg, Pair.create(targetPackageName, packageRunWhere));
+                pkg = targetPackageName;
+                logger.info("Change Manifest package to: {}", pkg);
+                packageAttr.setValue(pkg);
+            }
+        }
+
+        boolean replaced = false;
         for (Map.Entry<String, Pair<String, RunWhere>> replace : toReplace.entrySet()) {
             String name = replace.getKey();
             Pair<String, RunWhere> value = replace.getValue();
@@ -55,21 +74,6 @@ public class ExtensionProcess extends AbsProcess {
                 throw new RuntimeException(e);
             }
             mContainer.document = document;
-        }
-
-        Element rootElement = document.getRootElement();
-        Namespace namespace = rootElement.getNamespace();
-        Attribute packageAttr = rootElement.attribute("package");
-        String pkg = packageAttr.getValue();
-        logger.info("Manifest package: {}", pkg);
-
-        String targetPackageName = mExtension.getPackageName();
-        if (targetPackageName != null && targetPackageName.length() > 0) {
-            if (shouldRun(debuggable, mExtension.getPackageRunWhere())) {
-                pkg = targetPackageName;
-                logger.info("Change Manifest package to: {}", pkg);
-                packageAttr.setValue(pkg);
-            }
         }
 
         ApplicationConfig application = mExtension.getApplicationConfig();
